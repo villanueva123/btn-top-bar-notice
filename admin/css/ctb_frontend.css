@@ -1,0 +1,9 @@
+.alert-box-top-bar {
+    display: block;
+    width: 100%;
+    padding: 20px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    background-color:rgb(230, 111, 99);
+    color:#fff;
+}
