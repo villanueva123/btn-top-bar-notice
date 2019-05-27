@@ -168,7 +168,7 @@ function generate_form_data( $form ){
                         break;
                     case 'textarea':
                     case 'wp-editor':
-                      data[$field.name] = tinymce.activeEditor.getContent({format: 'html'});
+                      data[$field.name] = tinymce.activeEditor.getContent({format: 'raw'});
                       break;
 
                     default:
