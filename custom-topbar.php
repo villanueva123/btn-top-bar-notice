@@ -15,7 +15,7 @@
  * @wordpress-plugin
  * Plugin Name:       Custom Top Bar Alert
  * Plugin URI:        https://businesstechninjas.com
- * Description:       This Plugin  is use to display custom alert Box on the pages
+ * Description:       This Plugin  is use to display custom alert Box on the pages.
  * Version:           1.0.0
  * Author:            Business Tech Ninjas
  * Author URI:        https://businesstechninjas.com
@@ -38,15 +38,10 @@ if ( ! defined( 'WPINC' ) ) {
 define( 'CUSTOM_TOPBAR_VERSION', '1.0.0' );
 
 require plugin_dir_path( __FILE__ ) . 'admin/custom-topbar.php';
-
-function myprefix_enqueue_scripts() {
-	wp_enqueue_script( 'custom_js', plugins_url( 'js/custom-script.js', __FILE__ ), array( 'wp-util', 'underscore', 'jquery','wp-color-picker','jquery-ui-datepicker'), '', true  );
-}
-add_action( 'wp_enqueue_scripts', 'myprefix_enqueue_scripts' );
-
+require plugin_dir_path( __FILE__ ) . 'frontend/frontend-custom-topbar.php';
 
 /**
- * Gets the instance of the `elite_promos` class.
+ * Gets the instance of the `Tobar Alert` class.
  * This function is useful for quickly grabbing data from outside the plugin or class.
  *
  * Begins execution of the plugin on first call.

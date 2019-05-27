@@ -44,13 +44,11 @@
     css_class = ( data.id ) ? ' ' + data.css_class : '',
     content = ( data.content ) ? data.content : '';
   #>
-  <textarea id="{{data.css_class}}" style="width:400px;"
+  <textarea id="{{data.css_class}}"
     rows="{{row}}"
     name="{{data.name}}"
     class="widefat textarea{{css_class}}">{{{data.content}}}</textarea>
 </script>
-
-
 
 <?php
 /**

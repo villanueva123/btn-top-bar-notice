@@ -48,22 +48,18 @@ var $doc,
  window.addEventListener('load', function () {
 
    //Bail if btn_profile_data is undefined
-   if( (typeof elite_topbars_data === 'undefined') ){
+   if( (typeof custom_topbars_data === 'undefined') ){
      return false;
    }
 
    $doc = document;
-   ctb_data = ( window.elite_topbars_data ) ? window.elite_topbars_data : {};
+   ctb_data = ( window.custom_topbars_data ) ? window.custom_topbars_data : {};
    ctb_tabs = ctb_data.settings_tabs;
    ctb_form = ctb_data.form_config;
    ctb_next_id = ctb_data.next_id;
    I18n = ctb_data.I18n;
 
-   /*
-   console.log({
-     elite_topbars_data:elite_topbars_data,
-   });
-   */
+
    init();
 
    btn_init_toggles();
@@ -74,6 +70,7 @@ var $doc,
    * Init
    */
  function init(){
+
    $notice = $doc.getElementById('btn-notice');
    $add_new_form = $doc.getElementById('new_topbar_form');
 
@@ -108,19 +105,27 @@ var $doc,
 
    //Add New
    populate_new_form();
+
+
 }
 
 /**
   * Populate / Reset Add New Form
   */
 function populate_new_form(){
-    $inner_add_new.innerHTML = '';
+
 
     var new_form_data = JSON.parse(JSON.stringify( ctb_form ));
     new_form_data[1].value = ctb_next_id;
     ctb_add_form( $inner_add_new, new_form_data, 'add_new_topbar', '', 'open', [ ctb_add_new ] );
     $add_new_btn = $inner_add_new.querySelector('.add-topbar');
      $('.colorpicker').wpColorPicker();
+     var length = $(".postbox").length;
+     for(var i = 0; i < length ;i++){
+       wp.editor.initialize('textarea-editor-'+i,
+                            ctb_data.editor_config );
+      }
+
     /**
       * Save Settings
       */
@@ -147,17 +152,25 @@ function generate_form_data( $form ){
     var error = {},
     data = {};
     _.each( ctb_form, function( el ) {
+
         if( el.slug ){
             var $field = $form.querySelector('[name="'+el.slug+'"]');
+            var $id = $form.querySelector('[name="'+el.slug+'"]');
             if( $field != null ){
                 var sanitize = ( el.sanitive ) ? el.sanitive : false,
                 validate = ( el.validate ) ? el.validate : false,
                 type = el.type,
+
                 value = $field.value;
                 switch (type) {
                     case 'switch':
                       data[$field.name] = ( $field.checked ) ? 1 : 0;
                         break;
+                    case 'textarea':
+                    case 'wp-editor':
+                      data[$field.name] = tinymce.activeEditor.getContent({format: 'html'});
+                      break;
+
                     default:
                       data[$field.name] = $field.value;
                       break;
@@ -186,7 +199,7 @@ function generate_form_data( $form ){
 
          if (typeof data[slug] != 'undefined') {
              var value = data[slug];
-             if(el.type==='switch'){
+             if(el.type==='swadd_postbox_formitch'){
                  form_data[i].checked = parseInt(value);
              }
              else {
@@ -246,7 +259,7 @@ function generate_form_data( $form ){
 
      ctb_topbars[id].$delete.onclick = function(e){
          e.preventDefault();
-         var confirmation = confirm('Are you sure you want to delete topbar : '+ data.topbar_code +'?');
+         var confirmation = confirm('Are you sure you want to delete topbar this top bar?');
          if (!confirmation) {
              e.stopPropagation();
          }
@@ -254,7 +267,7 @@ function generate_form_data( $form ){
              ctb_ajax('POST', {
                  action     : 'delete_topbar',
                  id         : ctb_topbars[id].topbar.id,
-                 topbar_code : ctb_topbars[id].topbar.topbar_code,
+                 topbar_code : ctb_topbars[id].topbar.tag_id,
                  css_id     : id
              }, ctb_settings_callback );
          }
@@ -352,21 +365,6 @@ function generate_form_data( $form ){
          //TODO - Activate Special Settings
      });
 
-     //Initialize Functional Settings
-     _.each( init_tmpls, function( tmpl, id ) {
-         var $form_el = $el.querySelector('#'+id);
-         switch (tmpl) {
-             case 'multi_select':
-             case 'select':
-                var data_slug = $form_el.getAttribute('data-choices'),
-                data = ( ctb_data[data_slug] ) ? ctb_data[data_slug] : {};
-                init_select( $form_el, data );
-                break;
-            default:
-              break;
-          }
-    });
-
     //Flush TMPLS init
     init_tmpls = {};
  }
@@ -375,13 +373,6 @@ function generate_form_data( $form ){
    * Save Settings Callback
    */
  function ctb_settings_callback(response){
-
-   /*
-   console.log({
-     func:'ctb_settings_callback',
-     response:response
-   });
-   */
 
    var data = response.data,
     action = ( data.action ) ? data.action : false,
@@ -395,6 +386,7 @@ function generate_form_data( $form ){
          }
      }
    }
+
    //TODO Check for close or toggle function
    if( action ){
        var css_id, $postbox;
@@ -415,6 +407,8 @@ function generate_form_data( $form ){
                     add_postbox_form( data.topbar, ctb_next_id );
                     //Reset Add New Form
                     populate_new_form();
+
+
                 }
                break;
               case 'delete_topbar':
@@ -475,16 +469,18 @@ function generate_form_data( $form ){
  /**
    * Generate Settings For Tab
    */
-  function panel_data( data, form_data ){
+  function panel_data( data, form_data){
     data.active_tab = ctb_tab;
     data.content = '';
     data.sections = panel_sections( data.slug, form_data );
     if( data.sections ){
+      ctb_index = 0;
       _.each( data.sections, function( section ) {
+        var count_index = $(".postbox").length;
         if( section.settings ){
-          section.content = '';
+            section.content = '';
           _.each( section.settings, function( settings ) {
-              section.content += settings_row(settings);
+              section.content += settings_row(settings,count_index);
           });
           data.content += ctb_tmpls.section(section);
         }
@@ -516,9 +512,10 @@ function generate_form_data( $form ){
   /**
     * Generate Settings For Templates
    */
-  function settings_row(setting){
+  function settings_row(setting,index){
       var type = setting.type,
       slug = setting.slug,
+      id = setting.id,
       key = setting.key ? '_'+setting.key : '',
       css_id = slug + key,
       default_val = ( typeof setting.default !== 'undefined' ) ? setting.default : '';
@@ -588,11 +585,12 @@ function generate_form_data( $form ){
       case 'editor-css':
       case 'editor-js':
       case 'textarea':
-        setting.settings.css_id = slug;
-        setting.settings.css_class = 'btn-code-editor';
+      setting.settings.css_id = slug;
+        setting.settings.css_class = "textarea-editor-"+index;
         setting.settings.name = slug;
         setting.settings.content = setting.value;
         init_tmpls[slug] = type;
+
         break;
         case 'multi_select':
         case 'select':
@@ -635,17 +633,6 @@ function generate_form_data( $form ){
     }
   }
 
-  /*
-  document.addEventListener('keyup', function (event) {
-      if (event.defaultPrevented) {
-          return;
-      }
-      var key = event.key || event.keyCode;
-      if (key === 'Escape' || key === 'Esc' || key === 27) {
-
-      }
-  });
-  */
 
 
   /**
@@ -686,6 +673,7 @@ function generate_form_data( $form ){
         case 'editor-css':
         case 'editor-js':
          html += ctb_tmpls.textarea( config.settings );
+
          break;
         case 'button':
           html += ctb_tmpls.button( config.settings );
@@ -753,6 +741,7 @@ function generate_form_data( $form ){
     * Init Select 2 type Functionality
    */
   function init_select( $el, data ){
+
       var args = {
           data:data
       };

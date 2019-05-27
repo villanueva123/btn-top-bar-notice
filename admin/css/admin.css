@@ -403,8 +403,3 @@
 .title_bar .status.dashicons-no{
     background: red;
 }
-
-/* Hide untested product features */
-#elite-order-promo-admin .products_options.products_tab{
-    display:none!important;
-}
