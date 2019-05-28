@@ -40,9 +40,8 @@
 			 							$condition = do_shortcode('[memb_has_any_tag tagid='.$tag_id.']');
 				 						if($condition == 'Yes'){
 				 							 if($setting['date-picker'] =='' || $current_date >= $start_date && $current_date <= $end_date){
-												 $html1 .= '<div class="alert-box-top-bar" id="alert-box'.$tag_id .'" style="background-color:'.$bg.';"><div class="alert-container">'.$message.'</div></div>';
-				 								 $html .='(function($) {$("#alert-box'.$tag_id.' p,#alert-box'.$tag_id.'p a,#alert-box'.$tag_id.'").css("color","'.$content_color.' !important");})( jQuery );';
-				 							 }
+												 $html1 .= '<div class="alert-box-top-bar" id="alert-box'.$tag_id .'" style="background-color:'.$bg.';color:'.$content_color.'"><div class="alert-container">'.$message.'</div></div>';
+				 								}
 				 						 }
 			 						}
 			 				}
