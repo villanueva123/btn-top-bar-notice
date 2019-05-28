@@ -544,6 +544,7 @@ class topbar_alert {
 		 <form method="post" action="options.php">
         <?php settings_fields( 'top-bar-settings-group' ); ?>
         <?php do_settings_sections( 'top-bar-settings-group' ); ?>
+				<h2>General Settings</h2>
         <table class="form-table">
 					<tr valign="top">
 					<th scope="row">Sort By</th>
