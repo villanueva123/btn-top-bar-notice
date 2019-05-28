@@ -21,7 +21,7 @@ var $doc,
  ctb_tab = 'main',
  ctb_form,
  ctb_add_new = {
-     label : 'Add New',
+     label : 'Save',
      attrs : [
          { prop : 'class', value : 'add-topbar button button-primary' },
      ]
