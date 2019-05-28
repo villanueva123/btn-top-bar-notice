@@ -30,7 +30,7 @@ function ctb_is_number($value){
  * @since    1.0.0
  */
 function ctb_sanitize_slug( $value ){
-    return sanitize_title( $value, '' );
+    return sanitize_text_field(htmlentities(stripslashes($value)));
 }
 
 /**

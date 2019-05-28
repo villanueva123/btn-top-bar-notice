@@ -24,7 +24,7 @@
 					 $html .="container = document.querySelector('".$container."');";
 			 				foreach ($topbars as $s => $setting) {
 			 						$tag_id = $setting['tag_id'];
-			 						$message = $setting['content'];
+			 						$message = html_entity_decode($setting['content']);
 			 						$content_color = $setting['cotent-color'];
 			 						$bg = $setting['color-picker'];
 			 						$current_date = strtotime( date("Y-m-d") );
@@ -35,9 +35,8 @@
 			 							$condition = do_shortcode('[memb_has_any_tag tagid='.$tag_id.']');
 				 						if($condition == 'Yes'){
 				 							 if($setting['date-picker'] =='' || $current_date >= $start_date && $current_date <= $end_date){
-
 												 $html1 .= '<div class="alert-box-top-bar" id="alert-box'.$tag_id .'" style="background-color:'.$bg.';"><div class="alert-container">'.$message.'</div></div>';
-				 								 $html .='(function($) {$("#alert-box'.$tag_id.' p,#alert-box'.$tag_id.' a,#alert-box'.$tag_id.'").css("color","'.$content_color.'");})( jQuery );';
+				 								 $html .='(function($) {$("#alert-box'.$tag_id.' p,#alert-box'.$tag_id.'p a,#alert-box'.$tag_id.'").css("color","'.$content_color.' !important");})( jQuery );';
 				 							 }
 				 						 }
 			 						}

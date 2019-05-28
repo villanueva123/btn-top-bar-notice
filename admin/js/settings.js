@@ -154,6 +154,7 @@ function generate_form_data( $form ){
     _.each( ctb_form, function( el ) {
 
         if( el.slug ){
+            console.log(el);
             var $field = $form.querySelector('[name="'+el.slug+'"]');
             var $id = $form.querySelector('[name="'+el.slug+'"]');
             if( $field != null ){
@@ -167,10 +168,9 @@ function generate_form_data( $form ){
                       data[$field.name] = ( $field.checked ) ? 1 : 0;
                         break;
                     case 'textarea':
-                    case 'wp-editor':
-                      data[$field.name] = tinymce.activeEditor.getContent({format: 'raw'});
+                      var textarea_id = $($id).attr("id");
+                      data[$field.name] = tinyMCE.get(''+textarea_id).getContent();
                       break;
-
                     default:
                       data[$field.name] = $field.value;
                       break;

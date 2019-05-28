@@ -88,7 +88,7 @@ class topbar_alert {
 			$this->version = TOPBAR_ALERT_VERSION;
 		}
 		else {
-			$this->version = '1.0.1';
+			$this->version = '1.0.0';
 		}
 		$this->plugin_name = 'btn-top-bar-notice';
 		$this->load_actions();
@@ -447,7 +447,7 @@ class topbar_alert {
 			'type'		=> 'input',
 			'tab'		=> $tab,
 			'section'	=> $section,
-			
+
 		);
 		$settings[] = array(
 			'slug'		=> 'active',
@@ -467,6 +467,7 @@ class topbar_alert {
 			'type'		=> 'textarea',
 			'tab'		=> $tab,
 			'section'	=> $section,
+			'sanitize'	=> 'ctb_sanitize_slug'
 		);
 		$settings[] = array(
 			'slug'		=> 'cotent-color',
