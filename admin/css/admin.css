@@ -351,8 +351,9 @@
 	text-indent: -1px;
     content: "\f140";
 	display: inline-block;
-	font: 400 20px/1 dashicons;
+	font: 400 40px/1 dashicons;
 	speak: none;
+  margin-left: -10px;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 	text-decoration: none !important

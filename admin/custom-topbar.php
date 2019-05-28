@@ -88,7 +88,7 @@ class topbar_alert {
 			$this->version = TOPBAR_ALERT_VERSION;
 		}
 		else {
-			$this->version = '1.0.0';
+			$this->version = '1.0.8';
 		}
 		$this->plugin_name = 'btn-top-bar-notice';
 		$this->load_actions();
@@ -151,9 +151,11 @@ class topbar_alert {
 		add_submenu_page( 'btn-top-bar-notice', 'General Setting', 'General Setting',
     'manage_options','general-settings-top-bar',
 		array($this, 'top_bar_general_settings'));
+
 		register_setting( 'top-bar-settings-group', 'container_class' );
-
-
+		register_setting( 'top-bar-settings-group', 'sort_selection' );
+		register_setting( 'top-bar-settings-group', 'general_bg_color_picker' );
+		register_setting( 'top-bar-settings-group', 'general_text_color_picker' );
   }
 
 
@@ -171,13 +173,15 @@ class topbar_alert {
 			 wp_enqueue_style('selectWoo', plugin_dir_url( __FILE__ ) . 'css/selectWoo.css', false, '5.7.2');
 			 wp_enqueue_script('selectWoo' );
 
-			 			wp_enqueue_editor();
+			 	wp_enqueue_editor();
 			 $dependencies = array('wp-util', 'underscore', 'jquery','wp-color-picker','jquery-ui-datepicker');
 			 wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ). 'js/settings.js', $dependencies, $this->version, true );
 			 wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/admin.css', array(), $this->version, 'all' );
 		 }
-
-
+		 if( $hook === 'topbar-alert-box_page_general-settings-top-bar') {
+			 $dependencies = array('wp-util', 'underscore', 'jquery','wp-color-picker','jquery-ui-datepicker');
+			 wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ). 'js/general_settings.js', $dependencies, $this->version, true );
+		 }
 	 }
 
 	/**
@@ -470,7 +474,7 @@ class topbar_alert {
 			'sanitize'	=> 'ctb_sanitize_slug'
 		);
 		$settings[] = array(
-			'slug'		=> 'cotent-color',
+			'slug'		=> 'cotent_color',
 			'title'		=> __( 'Text Color', 'btn-top-bar-notice' ),
 			'desc'		=> __( 'Select the text color of the Alert Box.', 'btn-top-bar-notice' ),
 			'type'		=> 'colorpicker',
@@ -478,7 +482,7 @@ class topbar_alert {
 			'section'	=> $section,
 		);
 		$settings[] = array(
-			'slug'		=> 'color-picker',
+			'slug'		=> 'color_picker',
 			'title'		=> __( 'Background Color', 'btn-top-bar-notice' ),
 			'desc'		=> __( 'Select the background color of the Alert Box.', 'btn-top-bar-notice' ),
 			'type'		=> 'colorpicker',
@@ -486,7 +490,7 @@ class topbar_alert {
 			'section'	=> $section,
 		);
 		$settings[] = array(
-			'slug'		=> 'start-date-picker',
+			'slug'		=> 'start_date_picker',
 			'title'		=> __( 'Start Date', 'btn-top-bar-notice' ),
 			'desc'		=> __( 'Select Starting Date of the Alert Box.', 'btn-top-bar-notice' ),
 			'type'		=> 'datepicker',
@@ -494,7 +498,7 @@ class topbar_alert {
 			'section'	=> $section,
 		);
 		$settings[] = array(
-			'slug'		=> 'date-picker',
+			'slug'		=> 'date_picker',
 			'title'		=> __( 'End Date', 'btn-top-bar-notice' ),
 			'desc'		=> __( 'Select Ending Date of the Alert Box.', 'btn-top-bar-notice' ),
 			'type'		=> 'datepicker',
@@ -541,7 +545,24 @@ class topbar_alert {
         <?php settings_fields( 'top-bar-settings-group' ); ?>
         <?php do_settings_sections( 'top-bar-settings-group' ); ?>
         <table class="form-table">
-
+					<tr valign="top">
+					<th scope="row">Sort By</th>
+					<td>
+						<select name="sort_selection">
+							<?php if(get_option('sort_selection') == '1'){
+									$option = "<option value='".get_option('sort_selection')."'>Ascending</option>";
+								}elseif(get_option('sort_selection') == '2'){
+									$option = "<option value='".get_option('sort_selection')."'>Descending</option>";
+								}else{
+									$option = "<option value='0'></option>";
+								}
+								echo $option;
+							?>
+							<option value="1">Ascending</option>
+							<option value="2">Descending</option>
+						</select>
+					</td>
+					</tr>
             <tr valign="top">
             <th scope="row">Container Class</th>
             <td>
@@ -549,6 +570,20 @@ class topbar_alert {
               <label><i>Add the class container that will display the alert box like this (.container)</i></label>
             </td>
             </tr>
+						<tr valign="top">
+            <th scope="row">Text Color</th>
+            <td>
+              <input type="text" name="general_text_color_picker" value = "<?php echo esc_attr( get_option('general_text_color_picker') ); ?>" class="colorpicker"/>
+              <label><i>Add General Text Color </i></label>
+            </td>
+            </tr>
+						<tr valign="top">
+						<th scope="row">Background Color</th>
+						<td>
+							<input type="text" name="general_bg_color_picker" value = "<?php echo esc_attr( get_option('general_bg_color_picker') ); ?>" class="colorpicker"/>
+							<label><i>Add General Background Color </i></label>
+						</td>
+						</tr>
         </table>
         <?php submit_button(); ?>
 

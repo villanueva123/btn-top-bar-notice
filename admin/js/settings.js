@@ -448,14 +448,37 @@ function generate_form_data( $form ){
    * Update topbar Title
    */
  function generate_topbar_title( data ){
-     var title = I18n.topbar_code_title + ' ' + data.tag_id;
-
+    var title = 'Tag ID('+data.tag_id+') - ';
+    var get_start_date = data.start_date_picker;
+    var start_date = ( get_start_date === '' ) ? '' : ' - '+date_format(get_start_date);
+    var get_end_date = data.date_picker;
+    var end_date = ( get_start_date === '' ) ? '' : ' to '+date_format(get_end_date);
     var data_active = ( typeof data.active === 'undefined') ? 1 : parseInt(data.active),
-    status = ( data_active > 0 ) ? 'yes' : 'no';
-    title += '<span class="status dashicons dashicons-'+status+'"></span>';
+    status = ( data_active > 0 ) ? 'Active' : 'Not Active';
+    title += '<span class="status_content">'+status+'</span>';
+    title += '<span class="date-duration">'+start_date +'</span>';
+    title += '<span class="date-duration">'+end_date; +'</span>';
     return title;
  }
 
+ /**
+   * Format Date
+   */
+  function date_format(dateObject) {
+       var d = new Date(dateObject);
+       var day = d.getDate('');
+       var month = d.getMonth() + 1;
+       var year = d.getFullYear();
+       if (day < 10) {
+           day = "0" + day;
+       }
+       if (month < 10) {
+           month = "0" + month;
+       }
+       var date = month + "/" + day + "/"  + year;
+
+       return date;
+   }
  /**
    * Display Errors on Form
    */
